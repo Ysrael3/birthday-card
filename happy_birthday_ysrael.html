@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday, Ysrael!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to top right, #fff7ed, #fde68a);
+      overflow-x: hidden;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      perspective: 1000px;
+    }
+
+    .card {
+      width: 320px;
+      height: 480px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-front {
+      background: #fcd34d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      text-align: center;
+      background-image: url('https://www.transparenttextures.com/patterns/bright-squares.png');
+    }
+
+    .card-front h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      color: #b45309;
+    }
+
+    .card-front p {
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: #78350f;
+    }
+
+    .click-hint {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #92400e;
+    }
+
+    .card-back {
+      background: #fff;
+      transform: rotateY(180deg);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    label, input, textarea, button {
+      font-family: inherit;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1rem;
+      background-color: #f59e0b;
+      color: white;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #d97706;
+    }
+
+    .thank-you {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .verse {
+      font-style: italic;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .admin-btn {
+      background: none;
+      border: none;
+      color: #2563eb;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .admin-panel {
+      margin-top: 1rem;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+
+    .message-box {
+      border-bottom: 1px solid #eee;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .message-box button {
+      margin-top: 0.2rem;
+      background: #ef4444;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card-container">
+  <div class="card" id="flipCard">
+    <div class="card-face card-front" id="cardFront">
+      <h1>🎉 It's Ysrael's Birthday! 🎉</h1>
+      <p>Send a message to the birthday boi!</p>
+      <div class="click-hint">Tap to open card</div>
+    </div>
+    <div class="card-face card-back">
+      <div id="formSection">
+        <label for="name">Your Name or Nickname:</label>
+        <input type="text" id="name" required />
+
+        <label for="message">Your Message:</label>
+        <textarea id="message" rows="5" required></textarea>
+
+        <button onclick="submitMessage()">Send to Ysrael</button>
+        <button class="admin-btn" onclick="promptAdmin()">Enter admin code</button>
+      </div>
+
+      <div id="thankYouSection" class="thank-you hidden">
+        <h2>Thank you! 🎈</h2>
+        <div class="verse" id="verseDisplay"></div>
+      </div>
+
+      <div id="adminSection" class="hidden">
+        <h3>📬 Messages</h3>
+        <div id="messagesPanel" class="admin-panel"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const card = document.getElementById('flipCard');
+  const cardFront = document.getElementById('cardFront');
+  let flipped = false;
+
+  card.addEventListener('click', () => {
+    if (!flipped) {
+      card.classList.add('flipped');
+      flipped = true;
+    }
+  });
+
+  const verses = [
+    "Philippians 4:13 – I can do all things through Christ who strengthens me.",
+    "Jeremiah 29:11 – For I know the plans I have for you, says the Lord.",
+    "Isaiah 40:31 – Those who hope in the Lord will renew their strength.",
+    "Romans 8:28 – In all things God works for the good of those who love Him.",
+    "Psalm 37:4 – Delight in the Lord and He will give you the desires of your heart.",
+    "2 Timothy 1:7 – God gave us a spirit of power, love and a sound mind.",
+  ];
+
+  function submitMessage() {
+    const name = document.getElementById('name').value.trim();
+    const msg = document.getElementById('message').value.trim();
+    const thankYouSection = document.getElementById('thankYouSection');
+    const formSection = document.getElementById('formSection');
+
+    if (!/^[A-Za-z ]+$/.test(name)) {
+      alert("Name must only contain letters and spaces.");
+      return;
+    }
+
+    if (name && msg) {
+      localStorage.setItem(`bday-msg-${Date.now()}`, JSON.stringify({ name, msg }));
+      const randomVerse = verses[Math.floor(Math.random() * verses.length)];
+      document.getElementById("verseDisplay").innerText = randomVerse;
+      formSection.classList.add('hidden');
+      thankYouSection.classList.remove('hidden');
+    }
+  }
+
+  function promptAdmin() {
+    const code = prompt("Enter admin code:");
+    if (code === "142006") {
+      document.getElementById("formSection").classList.add("hidden");
+      document.getElementById("adminSection").classList.remove("hidden");
+      loadMessages();
+    }
+  }
+
+  function loadMessages() {
+    const panel = document.getElementById("messagesPanel");
+    panel.innerHTML = '';
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('bday-msg-'));
+    keys.sort().reverse();
+    keys.forEach(k => {
+      const { name, msg } = JSON.parse(localStorage.getItem(k));
+      const div = document.createElement("div");
+      div.className = "message-box";
+      div.innerHTML = `<strong>${name}</strong><p>${msg}</p>`;
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.onclick = () => {
+        localStorage.removeItem(k);
+        loadMessages();
+      };
+      div.appendChild(delBtn);
+      panel.appendChild(div);
+    });
+  }
+</script>
+
+</body>
+</html>
